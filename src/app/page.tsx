@@ -1,7 +1,7 @@
 import Image from "next/image";
-import wiki_API from "../../lib/wiki";
+import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
 
-const wiki_data = await wiki_API() 
+const wiki_data = await ticketmaster_API() 
 
 
 export default function Home() {
