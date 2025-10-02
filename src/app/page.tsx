@@ -1,108 +1,86 @@
-import Image from "next/image";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
-
-const wiki_data = await ticketmaster_API() 
-
+import usgsTrails_API from "../../lib/USGSTrailEndpoint";
 
 export default function Home() {
-  console.log(wiki_data)
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [eventData, setEventData] = useState<any>(null);
+  const [trails, setTrails] = useState<any[]>([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
+  const [loadingTrails, setLoadingTrails] = useState(true);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+  useEffect(() => {
+    async function fetchEvents() {
+      const data = await ticketmaster_API();
+      setEventData(data);
+      setLoadingEvents(false);
+    }
+
+    async function fetchTrails() {
+      const data = await usgsTrails_API();
+      setTrails(data);
+      setLoadingTrails(false);
+    }
+
+    fetchEvents();
+    fetchTrails();
+  }, []);
+
+  if (loadingEvents || loadingTrails) return <div>Loading data...</div>;
+
+  const event = eventData;
+  const venue = event?._embedded?.venues?.[0];
+
+  return (
+    <div className="font-sans min-h-screen p-8 sm:p-20 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <main className="max-w-4xl mx-auto space-y-12">
+        {/* Ticketmaster Event */}
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h1 className="text-3xl font-bold mb-4">{event?.name}</h1>
+          <p className="mt-4">{event?.info}</p>
+          <p className="mt-4">
+            <strong>Date:</strong> {event?.dates?.start?.localDate} at {event?.dates?.start?.localTime}
+          </p>
+          {venue && (
+            <div className="mt-4">
+              <h2 className="text-xl font-semibold">Venue</h2>
+              <p>{venue.name}</p>
+              <p>
+                {venue.address?.line1}, {venue.city?.name}, {venue.state?.stateCode}
+              </p>
+              <a
+                href={venue.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                Venue Info
+              </a>
+            </div>
+          )}
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href={event.url}
             target="_blank"
             rel="noopener noreferrer"
+            className="inline-block mt-6 px-5 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            Buy Tickets
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+        </section>
+
+        {/* USGS Trails */}
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h2 className="text-2xl font-bold mb-4">USGS Trails</h2>
+          <ul className="list-disc list-inside space-y-1 max-h-96 overflow-y-auto">
+            {trails.map((trail) => (
+              <li key={trail.id}>
+                {trail.name} — {trail.lengthMiles} miles
+              </li>
+            ))}
+          </ul>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
