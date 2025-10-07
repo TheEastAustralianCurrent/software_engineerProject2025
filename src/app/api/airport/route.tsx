@@ -1,24 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
+  const apiKey = process.env.AVIATIONSTACK_API_KEY;
+  const url = `http://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=PHL&flight_status=active`;
+
   try {
-    // Example: fetching flights from an external API
-    const externalRes = await fetch("https://api.example.com/flights?airport=PHL", {
-      headers: {
-        "Authorization": `Bearer ${process.env.AIRPORT_API_KEY}`,
-      },
-    });
-
-    if (!externalRes.ok) {
-      const text = await externalRes.text();
-      console.error("External API failed:", externalRes.status, text);
-      return NextResponse.json({ error: "Failed to fetch flights" }, { status: 500 });
-    }
-
-    const data = await externalRes.json();
-    return NextResponse.json(data);
-  } catch (err) {
-    console.error("API route error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`API request failed: ${res.status}`);
+    const data = await res.json();
+    
+    console.log(data); // thêm để debug xem API trả gì
+    return NextResponse.json(data.data || []);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

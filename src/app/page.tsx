@@ -28,7 +28,7 @@ const [loadingFlights, setLoadingFlights] = useState(true);
     }
      async function fetchFlights() {
     try {
-      const res = await fetch("/api/airport"); // make sure the path is correct
+      const res = await fetch('/api/airport'); // make sure the path is correct
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setFlights(data);
