@@ -28,7 +28,7 @@ const [loadingFlights, setLoadingFlights] = useState(true);
     }
      async function fetchFlights() {
     try {
-      const res = await fetch('/api/airport'); // make sure the path is correct
+      const res = await fetch('/api/flights'); // make sure the path is correct
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setFlights(data);
@@ -104,18 +104,23 @@ const [loadingFlights, setLoadingFlights] = useState(true);
           </ul>
         </section>
          {/* Airport Flights */}
-        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-  <h2 className="text-2xl font-bold mb-4">Flights in PHL (PHL)</h2>
+       <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+  <h2 className="text-2xl font-bold mb-4">Flights departing PHL</h2>
+
   {loadingFlights ? (
     <div>Loading flights...</div>
   ) : flights.length === 0 ? (
     <div>No flights found.</div>
   ) : (
-    <ul className="list-disc list-inside space-y-1 max-h-96 overflow-y-auto">
-      {flights.map((flight: any, i: number) => (
+    <ul className="list-disc list-inside space-y-2 max-h-96 overflow-y-auto">
+      {flights.map((f: any, i: number) => (
         <li key={i}>
-          {flight.flight?.iata || flight.flight?.number || "N/A"} —{" "}
-          {flight.airline?.name || "Unknown Airline"}
+         ✈️ <strong>{f.airline?.name || "Unknown Airline"}</strong> —{" "}
+      Flight {f.flight?.number || "N/A"} ({f.flight?.iata || "?"}) →{" "}
+      {f.arrival?.iata || "?"} ({f.arrival?.airport || "Unknown"})
+         <br />
+          🕒 Depart: {f.departure?.scheduled || "N/A"} | Arrive: {f.arrival?.scheduled || "N/A"}
+
         </li>
       ))}
     </ul>
