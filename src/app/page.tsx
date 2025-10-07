@@ -105,7 +105,7 @@ const [loadingFlights, setLoadingFlights] = useState(true);
         </section>
          {/* Airport Flights */}
        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-  <h2 className="text-2xl font-bold mb-4">Flights departing PHL</h2>
+  <h2 className="text-2xl font-bold mb-4">Flights In PHL</h2>
 
   {loadingFlights ? (
     <div>Loading flights...</div>
