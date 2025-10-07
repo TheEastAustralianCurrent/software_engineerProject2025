@@ -1,15 +1,18 @@
-// pages/api/airports.ts
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from 'next/server';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const response = await fetch(
-      'https://api.aviationstack.com/v1/airports?access_key=3aa6ce0efc925722eab6d7bb62d4f219'
-    );
+export default async function GET() {
 
+const url = 'https://api.api-ninjas.com/v1/airlines?name=aa';
+
+
+ try {
+    const response = await fetch(url, {
+      headers: {"X-Api-Key": "t6P0C4B3VqmnfBUXOcPO8A==ov1zN3LpDwFcIMS8"}
+    });
     const data = await response.json();
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch airports" });
+    console.log (data)
+    return (data);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

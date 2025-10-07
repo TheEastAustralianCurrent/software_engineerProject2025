@@ -3,13 +3,17 @@
 import React, { useEffect, useState } from "react";
 import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
 import usgsTrails_API from "../../lib/USGSTrailEndpoint";
+import  GET  from "../../lib/AirportEndpoint";
+
 
 export default function Home() {
+ GET()
   const [eventData, setEventData] = useState<any>(null);
   const [trails, setTrails] = useState<any[]>([]);
+  const [flights, setFlights] = useState<any[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [loadingTrails, setLoadingTrails] = useState(true);
-
+const [loadingFlights, setLoadingFlights] = useState(true);
   useEffect(() => {
     async function fetchEvents() {
       const data = await ticketmaster_API();
@@ -22,10 +26,14 @@ export default function Home() {
       setTrails(data);
       setLoadingTrails(false);
     }
+     
 
     fetchEvents();
     fetchTrails();
+    
   }, []);
+
+
 
   if (loadingEvents || loadingTrails) return <div>Loading data...</div>;
 
@@ -80,7 +88,27 @@ export default function Home() {
             ))}
           </ul>
         </section>
+         {/* Airport Flights */}
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h2 className="text-2xl font-bold mb-4"> Flights in PHL (PHL)</h2>
+          <ul className="list-disc list-inside space-y-1 max-h-96 overflow-y-auto">
+            {flights.map((flight: any, i: number) => (
+              <li key={i}>
+                {flight.flight?.iata || "N/A"} —{" "}
+                {flight.airline?.name || "Unknown Airline"}
+              </li>
+            ))}
+          </ul>
+        </section>
       </main>
     </div>
   );
 }
+
+
+
+
+
+
+
+
