@@ -120,7 +120,6 @@ const [loadingFlights, setLoadingFlights] = useState(true);
       {f.arrival?.iata || "?"} ({f.arrival?.airport || "Unknown"})
          <br />
           🕒 Depart: {f.departure?.scheduled || "N/A"} | Arrive: {f.arrival?.scheduled || "N/A"}
-
         </li>
       ))}
     </ul>
