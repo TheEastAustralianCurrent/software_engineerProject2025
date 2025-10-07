@@ -1,5 +1,5 @@
 
-
+"use client";
 import React, { useEffect, useState } from "react";
 import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
 import usgsTrails_API from "../../lib/USGSTrailEndpoint";
