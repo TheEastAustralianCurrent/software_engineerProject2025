@@ -1,13 +1,13 @@
-"use client";
+
 
 import React, { useEffect, useState } from "react";
 import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
 import usgsTrails_API from "../../lib/USGSTrailEndpoint";
-import  GET  from "../../lib/AirportEndpoint";
+
 
 
 export default function Home() {
- GET()
+
   const [eventData, setEventData] = useState<any>(null);
   const [trails, setTrails] = useState<any[]>([]);
   const [flights, setFlights] = useState<any[]>([]);
@@ -26,6 +26,21 @@ const [loadingFlights, setLoadingFlights] = useState(true);
       setTrails(data);
       setLoadingTrails(false);
     }
+     async function fetchFlights() {
+    try {
+      const res = await fetch("/api/airport"); // make sure the path is correct
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const data = await res.json();
+      setFlights(data);
+    } catch (err) {
+      console.error("Failed to fetch flights:", err);
+      setFlights([]);
+    } finally {
+      setLoadingFlights(false);
+    }
+  }
+
+  fetchFlights();
      
 
     fetchEvents();
@@ -90,16 +105,22 @@ const [loadingFlights, setLoadingFlights] = useState(true);
         </section>
          {/* Airport Flights */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-4"> Flights in PHL (PHL)</h2>
-          <ul className="list-disc list-inside space-y-1 max-h-96 overflow-y-auto">
-            {flights.map((flight: any, i: number) => (
-              <li key={i}>
-                {flight.flight?.iata || "N/A"} —{" "}
-                {flight.airline?.name || "Unknown Airline"}
-              </li>
-            ))}
-          </ul>
-        </section>
+  <h2 className="text-2xl font-bold mb-4">Flights in PHL (PHL)</h2>
+  {loadingFlights ? (
+    <div>Loading flights...</div>
+  ) : flights.length === 0 ? (
+    <div>No flights found.</div>
+  ) : (
+    <ul className="list-disc list-inside space-y-1 max-h-96 overflow-y-auto">
+      {flights.map((flight: any, i: number) => (
+        <li key={i}>
+          {flight.flight?.iata || flight.flight?.number || "N/A"} —{" "}
+          {flight.airline?.name || "Unknown Airline"}
+        </li>
+      ))}
+    </ul>
+  )}
+</section>
       </main>
     </div>
   );
