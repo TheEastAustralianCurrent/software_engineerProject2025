@@ -1,9 +1,11 @@
-"use client";
+"use client"; // must be first line for client-side rendering
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+
 import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
 import usgsTrails_API from "../../lib/USGSTrailEndpoint";
-import MapView from "../../lib/MapView";
 
 export default function Home() {
   const [eventData, setEventData] = useState<any>(null);
@@ -13,6 +15,10 @@ export default function Home() {
   const [loadingTrails, setLoadingTrails] = useState(true);
   const [loadingFlights, setLoadingFlights] = useState(true);
 
+  // Map container reference
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Fetch events, trails, flights
   useEffect(() => {
     async function fetchEvents() {
       const data = await ticketmaster_API();
@@ -40,9 +46,27 @@ export default function Home() {
       }
     }
 
+    fetchFlights();
     fetchEvents();
     fetchTrails();
-    fetchFlights();
+  }, []);
+
+  // Initialize MapLibre map
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    const map = new maplibregl.Map({
+      container: mapContainerRef.current,
+      style: "https://tiles.stadiamaps.com/styles/alidade_smooth.json",
+      center: [-75.1652, 39.9526], // Philadelphia
+      zoom: 10,
+    });
+
+    map.addControl(new maplibregl.NavigationControl(), "top-right");
+
+    map.on("load", () => console.log("Map loaded!"));
+
+    return () => map.remove();
   }, []);
 
   if (loadingEvents || loadingTrails) return <div>Loading data...</div>;
@@ -104,6 +128,7 @@ export default function Home() {
         {/* Airport Flights */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-2xl font-bold mb-4">Flights departing PHL</h2>
+
           {loadingFlights ? (
             <div>Loading flights...</div>
           ) : flights.length === 0 ? (
@@ -124,10 +149,14 @@ export default function Home() {
           )}
         </section>
 
-        {/* MapLibre Map Section */}
+        {/* MapLibre Map */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-2xl font-bold mb-4">Map View (PHL Area)</h2>
-          <MapView />
+          <div
+            ref={mapContainerRef}
+            className="w-full h-96 rounded-lg"
+            style={{ overflow: "hidden" }}
+          />
         </section>
       </main>
     </div>
