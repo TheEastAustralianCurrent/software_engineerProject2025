@@ -1,135 +1,53 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
-import usgsTrails_API from "../../lib/USGSTrailEndpoint";
-import MapView from "../../lib/MapView";
+import { Input } from "@/components\\ui/input"
+
+
+import dynamic from "next/dynamic";
+
+import { PersistedInput as UserInput} from "@/components\\ui/inputHomePage";
+
+
+
+//import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
+//import usgsTrails_API from "../../lib/USGSTrailEndpoint";
+//import  airportGET  from "../../lib/AirportEndpoint";
+//import Weather from "../../lib/weatherEndpoint";
+//import amadeusGet from "../../lib/AmadeusServer";
+
+const MapView = dynamic(() => import("../../lib/MapView"), { ssr: false });
+
+
 
 export default function Home() {
-  const [eventData, setEventData] = useState<any>(null);
-  const [trails, setTrails] = useState<any[]>([]);
-  const [flights, setFlights] = useState<any[]>([]);
-  const [loadingEvents, setLoadingEvents] = useState(true);
-  const [loadingTrails, setLoadingTrails] = useState(true);
-  const [loadingFlights, setLoadingFlights] = useState(true);
 
-  useEffect(() => {
-    async function fetchEvents() {
-      const data = await ticketmaster_API();
-      setEventData(data);
-      setLoadingEvents(false);
-    }
-
-    async function fetchTrails() {
-      const data = await usgsTrails_API();
-      setTrails(data);
-      setLoadingTrails(false);
-    }
-
-    async function fetchFlights() {
-      try {
-        const res = await fetch("/api/flights");
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const data = await res.json();
-        setFlights(data);
-      } catch (err) {
-        console.error("Failed to fetch flights:", err);
-        setFlights([]);
-      } finally {
-        setLoadingFlights(false);
-      }
-    }
-
-    fetchEvents();
-    fetchTrails();
-    fetchFlights();
-  }, []);
-
-  if (loadingEvents || loadingTrails) return <div>Loading data...</div>;
-
-  const event = eventData;
-  const venue = event?._embedded?.venues?.[0];
-
-  return (
-    <div className="font-sans min-h-screen p-8 sm:p-20 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <main className="max-w-4xl mx-auto space-y-12">
-        {/* Ticketmaster Event */}
-        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h1 className="text-3xl font-bold mb-4">{event?.name}</h1>
-          <p className="mt-4">{event?.info}</p>
-          <p className="mt-4">
-            <strong>Date:</strong> {event?.dates?.start?.localDate} at{" "}
-            {event?.dates?.start?.localTime}
-          </p>
-          {venue && (
-            <div className="mt-4">
-              <h2 className="text-xl font-semibold">Venue</h2>
-              <p>{venue.name}</p>
-              <p>
-                {venue.address?.line1}, {venue.city?.name},{" "}
-                {venue.state?.stateCode}
-              </p>
-              <a
-                href={venue.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                Venue Info
-              </a>
-            </div>
-          )}
-          <a
-            href={event.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mt-6 px-5 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Buy Tickets
-          </a>
+    const [keywordSearchVenues, setVenues] = useState<any[]>([]);
+   
+    return (
+      <main>
+        <section className="w-full flex flex-col items-center justify-center py-16">
+          <h1 className="head_text text-center font-extrabold leading-tight sm:text-6xl">
+            Discover and Plan:
+            <br className="max-md:hidden" />
+            <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-pink-500 bg-clip-text text-transparent">
+              Adventure Awaits!
+            </span>
+          </h1>
         </section>
+        <UserInput onResults={(data: any) => { 
+          //change the ticketmaster data to feed it into the map component
+          console.log(data._embedded.events[0]._embedded.venues);
 
-        {/* USGS Trails */}
-        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-4">USGS Trails</h2>
-          <ul className="list-disc list-inside space-y-1 max-h-96 overflow-y-auto">
-            {trails.map((trail) => (
-              <li key={trail.id}>
-                {trail.name} — {trail.lengthMiles} miles
-              </li>
-            ))}
-          </ul>
-        </section>
+          const v: any[] = data._embedded.events[0]._embedded.venues.flatMap(
+            (e: any) => data?._embedded?.events[0]._embedded.venues ?? []
+          );
+          setVenues(v)
+          
+        }} />
+        
 
-        {/* Airport Flights */}
-        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-4">Flights departing PHL</h2>
-          {loadingFlights ? (
-            <div>Loading flights...</div>
-          ) : flights.length === 0 ? (
-            <div>No flights found.</div>
-          ) : (
-            <ul className="list-disc list-inside space-y-2 max-h-96 overflow-y-auto">
-              {flights.map((f: any, i: number) => (
-                <li key={i}>
-                  ✈️ <strong>{f.airline?.name || "Unknown Airline"}</strong> —{" "}
-                  Flight {f.flight?.number || "N/A"} ({f.flight?.iata || "?"}) →{" "}
-                  {f.arrival?.iata || "?"} ({f.arrival?.airport || "Unknown"})
-                  <br />
-                  🕒 Depart: {f.departure?.scheduled || "N/A"} | Arrive:{" "}
-                  {f.arrival?.scheduled || "N/A"}
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        {/* MapLibre Map Section */}
-        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-4">Map View (PHL Area)</h2>
-          <MapView />
-        </section>
+        <MapView venues={keywordSearchVenues} />
       </main>
-    </div>
-  );
+    );
 }
