@@ -6,7 +6,8 @@ import React, { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-export default function MapView({ venues }: any) {
+
+export default function MapView({ ticketmasterData }: any) {
   /*
   The venue address data is brought in through the main page.tsx by using the inputHomePage component
   This should hold the data for the addedress of the venues. Right now the data grabs the first element of the list
@@ -14,9 +15,40 @@ export default function MapView({ venues }: any) {
   I am logging the venues to see what data is being passed in
   The data should be an array of venue objects with address information
   */
-  console.log(venues)
+
+  const eventsTicketmaster: Array<any> = ticketmasterData?._embedded?.events ?? [];
+  const features: Array<any> = [];
 
 
+  for (let i = 0; i < eventsTicketmaster.length; i++) {
+    // Process each event here
+    const event = eventsTicketmaster[i];
+
+    const venues = event?._embedded?.venues ?? [];
+    for (let j = 0; j < venues.length; j++) {
+      const venueLoc = venues[j]?.location;
+      if (!venueLoc || venueLoc.latitude == null || venueLoc.longitude == null)
+        continue;
+
+      // keep your feature shape; just use event + this venue
+      const feature = {
+        type: "Feature",
+        properties: {
+          description: `<strong>${event?.name ?? "Event"}</strong>` +
+            (event?.url ? `<p><a href="${event.url}" target="_blank" rel="noreferrer">View details</a></p>` : ""),
+          icon: "theatre"
+        },
+        geometry: {
+          type: "Point",
+          coordinates: [Number(venueLoc.longitude), Number(venueLoc.latitude)]
+        }
+      };
+      features.push(feature);
+      
+    }
+    
+  }
+  console.log(features)
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +67,7 @@ export default function MapView({ venues }: any) {
     const map = new maplibregl.Map({
       container: mapContainerRef.current,     
       style: "https://api.maptiler.com/maps/streets/style.json?key=7o03ssUQYlzGmehxkpai",
-      center: [-77.04, 38.907],
+      center: [Number(eventsTicketmaster[0]?._embedded?.venues[0]?.location.longitude) || -118.23365, Number(eventsTicketmaster[0]?._embedded?.venues[0]?.location.latitude) || 34.04898],
       zoom: 11.15,
     });
     // Add navigation control (the +/- zoom buttons)
@@ -50,116 +82,7 @@ export default function MapView({ venues }: any) {
             'type': 'geojson',
             'data': {
                 'type': 'FeatureCollection',
-                'features': [
-                    {
-                        'type': 'Feature',
-                        'properties': {
-                            'description':
-                                '<strong>Make it Mount Pleasant</strong><p><a href="http://www.mtpleasantdc.com/makeitmtpleasant" target="_blank" title="Opens in a new window">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>',
-                            'icon': 'theatre'
-                        },
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-77.038659, 38.931567]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'properties': {
-                            'description':
-                                '<strong>Mad Men Season Five Finale Watch Party</strong><p>Head to Lounge 201 (201 Massachusetts Avenue NE) Sunday for a <a href="http://madmens5finale.eventbrite.com/" target="_blank" title="Opens in a new window">Mad Men Season Five Finale Watch Party</a>, complete with 60s costume contest, Mad Men trivia, and retro food and drink. 8:00-11:00 p.m. $10 general admission, $20 admission and two hour open bar.</p>',
-                            'icon': 'theatre'
-                        },
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-77.003168, 38.894651]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'properties': {
-                            'description':
-                                '<strong>Big Backyard Beach Bash and Wine Fest</strong><p>EatBar (2761 Washington Boulevard Arlington VA) is throwing a <a href="http://tallulaeatbar.ticketleap.com/2012beachblanket/" target="_blank" title="Opens in a new window">Big Backyard Beach Bash and Wine Fest</a> on Saturday, serving up conch fritters, fish tacos and crab sliders, and Red Apron hot dogs. 12:00-3:00 p.m. $25.grill hot dogs.</p>',
-                            'icon': 'bar'
-                        },
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-77.090372, 38.881189]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'properties': {
-                            'description':
-                                '<strong>Ballston Arts & Crafts Market</strong><p>The <a href="https://ballstonarts-craftsmarket.blogspot.com/" target="_blank" title="Opens in a new window">Ballston Arts & Crafts Market</a> sets up shop next to the Ballston metro this Saturday for the first of five dates this summer. Nearly 35 artists and crafters will be on hand selling their wares. 10:00-4:00 p.m.</p>',
-                            'icon': 'art-gallery'
-                        }, 
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-77.111561, 38.882342]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'properties': {
-                            'description':
-                                '<strong>Seersucker Bike Ride and Social</strong><p>Feeling dandy? Get fancy, grab your bike, and take part in this year\'s <a href="http://dandiesandquaintrelles.com/2012/04/the-seersucker-social-is-set-for-june-9th-save-the-date-and-start-planning-your-look/" target="_blank" title="Opens in a new window">Seersucker Social</a> bike ride from Dandies and Quaintrelles. After the ride enjoy a lawn party at Hillwood with jazz, cocktails, paper hat-making, and more. 11:00-7:00 p.m.</p>',
-                            'icon': 'bicycle'
-                        },
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-77.052477, 38.943951]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'properties': {
-                            'description':
-                                '<strong>Capital Pride Parade</strong><p>The annual <a href="https://www.capitalpride.org/parade" target="_blank" title="Opens in a new window">Capital Pride Parade</a> makes its way through Dupont this Saturday. 4:30 p.m. Free.</p>',
-                            'icon': 'rocket'
-                        },
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-77.043444, 38.909664]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'properties': {
-                            'description':
-                                '<strong>Muhsinah</strong><p>Jazz-influenced hip hop artist <a href="https://www.muhsinah.com" target="_blank" title="Opens in a new window">Muhsinah</a> plays the <a href="https://www.blackcatdc.com">Black Cat</a> (1811 14th Street NW) tonight with <a href="https://www.exitclov.com" target="_blank" title="Opens in a new window">Exit Clov</a> and <a href="https://godsilla.bandcamp.com" target="_blank" title="Opens in a new window">Gods’illa</a>. 9:00 p.m. $12.</p>',
-                            'icon': 'music'
-                        },
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-77.031706, 38.914581]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'properties': {
-                            'description':
-                                '<strong>A Little Night Music</strong><p>The Arlington Players\' production of Stephen Sondheim\'s  <a href="http://www.thearlingtonplayers.org/drupal-6.20/node/4661/show" target="_blank" title="Opens in a new window"><em>A Little Night Music</em></a> comes to the Kogod Cradle at The Mead Center for American Theater (1101 6th Street SW) this weekend and next. 8:00 p.m.</p>',
-                            'icon': 'music'
-                        },
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-77.020945, 38.878241]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'properties': {
-                            'description':
-                                '<strong>Truckeroo</strong><p><a href="http://www.truckeroodc.com/www/" target="_blank">Truckeroo</a> brings dozens of food trucks, live music, and games to half and M Street SE (across from Navy Yard Metro Station) today from 11:00 a.m. to 11:00 p.m.</p>',
-                            'icon': 'music'
-                        },
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-77.007481, 38.876516]
-                        }
-                    }
-                ]
+                'features': features
             }
         });
 
@@ -201,7 +124,7 @@ export default function MapView({ venues }: any) {
     });
 
     return () => map.remove();
-  }, []);
+  }, [ticketmasterData]);
 
   return (
     <div

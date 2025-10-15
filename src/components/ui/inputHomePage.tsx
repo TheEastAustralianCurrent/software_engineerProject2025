@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 //this way the parent component can get the data and use it to plot the venues on the map
 
 import GET  from "@/lib/ticketmasterClient";
+import GET_keyword from "@/lib/ticketmasterClient";
 type PersistedInputProps = {
   onResults?: (data: unknown) => void; //callback to pass data back to parent component (the page with the map
 };
@@ -53,8 +54,9 @@ export function PersistedInput({ onResults }: PersistedInputProps) {
       // indicate loading
       setLoading(true);
       // make the call to ticketmaster
-      GET(keyword).then((data: any) => {
+      GET_keyword(keyword).then((data: any) => {
         //when we get a result from onresult if we get a response it will be data. else it will be null
+        console.log("data from ticketmasterClient:", data);
         onResults?.(data);});
     } catch (err: unknown) {
       let msg = "Search failed";
