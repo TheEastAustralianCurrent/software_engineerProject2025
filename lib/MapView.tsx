@@ -7,8 +7,17 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 export default function MapView({ venues }: any) {
-
+  /*
+  The venue address data is brought in through the main page.tsx by using the inputHomePage component
+  This should hold the data for the addedress of the venues. Right now the data grabs the first element of the list
+  It needs to be able to parse all venues in a list and plot them on the map
+  I am logging the venues to see what data is being passed in
+  The data should be an array of venue objects with address information
+  */
   console.log(venues)
+
+
+
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,6 +43,10 @@ export default function MapView({ venues }: any) {
 
     map.on('load', () => {
         map.addSource('places', {
+            //CODE below needs to be changed to uses the venues data passed in from ticketmaster.
+            //Also needs to be changed for other dat we bring in here like weather, airports, trails etc
+            //Right now it is hard coded data for testing purposes
+            //Once I get the data from ticketmaster and other sources I will need to parse the data into geojson format
             'type': 'geojson',
             'data': {
                 'type': 'FeatureCollection',

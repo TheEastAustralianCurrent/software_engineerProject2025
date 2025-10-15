@@ -22,8 +22,7 @@ const MapView = dynamic(() => import("../../lib/MapView"), { ssr: false });
 
 export default function Home() {
 
-    const [keywordSearchVenues, setVenues] = useState<any[]>([]);
-   
+    const [ticketmasterData, setData] = useState<any[]>([]);
     return (
       <main>
         <section className="w-full flex flex-col items-center justify-center py-16">
@@ -35,19 +34,33 @@ export default function Home() {
             </span>
           </h1>
         </section>
-        <UserInput onResults={(data: any) => { 
-          //change the ticketmaster data to feed it into the map component
-          console.log(data._embedded.events[0]._embedded.venues);
 
-          const v: any[] = data._embedded.events[0]._embedded.venues.flatMap(
-            (e: any) => data?._embedded?.events[0]._embedded.venues ?? []
-          );
-          setVenues(v)
+
+      {/* input component for the search bar on the home page. Using inputHomePage.tsx for search components */}
+        <UserInput onResults={(data: any) => { 
+          //Use onresult to wait for a result from inputHomePage from when the user enters a search 
+          //data holds what ever the the user entered from the input of the search bar
+          //change the ticketmaster data to feed it into the map component
+          //this on result in partivular is making a call to the ticketmaster api and getting back event data
+          //I am logging the venues of the events to see if I can get the address to plot on the map
+          console.log(data._embedded.events[0]._embedded.venues); 
           
+          //ONLY GRABBing ONE EVENT!!!!! DONT FORGET TO CHANGE THIS LATER 
+          
+
+          //once I get the data and I commpress all lists if there are multiple into one list using flatMap
+          //I set the v state to the list of venues using set state. I then hoist the data to the top 
+          //so that I can pass it to the map component as a prop to plot the venues on the map
+          //I also added a check to see if there is no data back from ticketmaster to avoid errors
+          //if there is no data back I set the state to a string that says "YOU GOT NOTHING BACK TRY AGAIN"
+
+          setData(data)
         }} />
         
-
-        <MapView venues={keywordSearchVenues} />
+      {/* map component to display the venues on the map. Using MapView for display and returning what MapView is showing. */}
+        <MapView 
+        //pass the venues state to the map component as a prop
+        venues={ticketmasterData}  />
       </main>
     );
 }

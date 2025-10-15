@@ -34,6 +34,7 @@ export default function RootLayout({
           <div className="gradient"/>
         </div>
         <main className="app">
+            {/* Nav bar component imported from components/ui/Nav.tsx */}
             <Nav/>
             {children}
         </main>

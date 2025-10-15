@@ -2,6 +2,14 @@ import * as React from "react"
 
 import { cn } from "../../lib/utils"
 
+//This is the input component that will be used throughout the app
+//It is a styled input component that uses the cn function to merge class names
+//You can customize the input by passing in className and type props
+//You can use it like this:
+// import { Input } from '@/components/ui/input'
+// <Input className="my-custom-class" type="text" placeholder="Enter text" />
+//The props used are: className, type, and any other props that a regular input element would use
+
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
     <input

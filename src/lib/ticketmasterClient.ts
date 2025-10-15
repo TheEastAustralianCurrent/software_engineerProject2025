@@ -1,8 +1,7 @@
-// No NextResponse import
 /*
 This fetch is for the search bar inside of the file inputHomePage.tsx
 It is called when the user submits a search query.
-returns 20 events(number might chaange or data pulled might change) 
+returns 20 events(number might change or data pulled might change) 
 with the address of the events for the map.
 */
 export default async function GET(search: string) {

@@ -1,3 +1,8 @@
+/*
+This is the top navigation bar with buttons for signing in and checking users events
+Buttons will be discussed later on whether to create a link for a user page or a cart page
+or both.
+*/
 "use client";
 
 import Link from 'next/link';
@@ -39,9 +44,7 @@ const Nav = () => {
           EVENT PLANNER
         </p>
         </Link>
-
-
-        
+        {/*desktop navigation */}
         <div className="sm:flex hidden ">
           {isUserLoggedIn ? (
             <div className="flex gap-3 md:gap-5">
@@ -178,9 +181,6 @@ const Nav = () => {
         )}
         </div>
       </nav>
-
-
-      
     </>
   )
 }
