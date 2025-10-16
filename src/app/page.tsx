@@ -1,112 +1,42 @@
-
 "use client";
+
 import React, { useEffect, useState } from "react";
-import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
-import usgsTrails_API from "../../lib/USGSTrailEndpoint";
+import { Input } from "@/components\\ui/input"
+
+
+import dynamic from "next/dynamic";
+
+import { PersistedInput as UserInput} from "@/components\\ui/inputHomePage";
+
+
+
+//import ticketmaster_API from "../../lib/ticketmasterDiscoveryEndpoint";
+//import usgsTrails_API from "../../lib/USGSTrailEndpoint";
+//import  airportGET  from "../../lib/AirportEndpoint";
+//import Weather from "../../lib/weatherEndpoint";
+//import amadeusGet from "../../lib/AmadeusServer";
+
+const MapView = dynamic(() => import("../../lib/MapView"), { ssr: false });
 
 
 
 export default function Home() {
 
-  const [eventData, setEventData] = useState<any>(null);
-  const [trails, setTrails] = useState<any[]>([]);
-  const [flights, setFlights] = useState<any[]>([]);
-  const [loadingEvents, setLoadingEvents] = useState(true);
-  const [loadingTrails, setLoadingTrails] = useState(true);
-const [loadingFlights, setLoadingFlights] = useState(true);
-  useEffect(() => {
-    async function fetchEvents() {
-      const data = await ticketmaster_API();
-      setEventData(data);
-      setLoadingEvents(false);
-    }
-
-    async function fetchTrails() {
-      const data = await usgsTrails_API();
-      setTrails(data);
-      setLoadingTrails(false);
-    }
-     async function fetchFlights() {
-    try {
-      const res = await fetch('/api/flights'); // make sure the path is correct
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const data = await res.json();
-      setFlights(data);
-    } catch (err) {
-      console.error("Failed to fetch flights:", err);
-      setFlights([]);
-    } finally {
-      setLoadingFlights(false);
-    }
-  }
-
-  fetchFlights();
-     
-
-    fetchEvents();
-    fetchTrails();
-    
-  }, []);
-
-
-
-  if (loadingEvents || loadingTrails) return <div>Loading data...</div>;
-
-  const event = eventData;
-  const venue = event?._embedded?.venues?.[0];
-
-  return (
-    <div className="font-sans min-h-screen p-8 sm:p-20 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <main className="max-w-4xl mx-auto space-y-12">
-        {/* Ticketmaster Event */}
-        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h1 className="text-3xl font-bold mb-4">{event?.name}</h1>
-          <p className="mt-4">{event?.info}</p>
-          <p className="mt-4">
-            <strong>Date:</strong> {event?.dates?.start?.localDate} at {event?.dates?.start?.localTime}
-          </p>
-          {venue && (
-            <div className="mt-4">
-              <h2 className="text-xl font-semibold">Venue</h2>
-              <p>{venue.name}</p>
-              <p>
-                {venue.address?.line1}, {venue.city?.name}, {venue.state?.stateCode}
-              </p>
-              <a
-                href={venue.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                Venue Info
-              </a>
-            </div>
-          )}
-          <a
-            href={event.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mt-6 px-5 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Buy Tickets
-          </a>
+    const [ticketmasterData, setData] = useState<any[]>([]);
+    return (
+      <main>
+        <section className="w-full flex flex-col items-center justify-center py-16">
+          <h1 className="head_text text-center font-extrabold leading-tight sm:text-6xl">
+            Discover and Plan:
+            <br className="max-md:hidden" />
+            <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-pink-500 bg-clip-text text-transparent">
+              Adventure Awaits!
+            </span>
+          </h1>
         </section>
 
-        {/* USGS Trails */}
-        <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-4">USGS Trails</h2>
-          <ul className="list-disc list-inside space-y-1 max-h-96 overflow-y-auto">
-            {trails.map((trail) => (
-              <li key={trail.id}>
-                {trail.name} — {trail.lengthMiles} miles
-              </li>
-            ))}
-          </ul>
-        </section>
-         {/* Airport Flights */}
-       <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-  <h2 className="text-2xl font-bold mb-4">Flights In PHL</h2>
 
+<<<<<<< HEAD
   {loadingFlights ? (
     <div>Loading flights...</div>
   ) : flights.length === 0 ? (
@@ -134,15 +64,33 @@ const [loadingFlights, setLoadingFlights] = useState(true);
     </ul>
   )}
 </section>
+=======
+      {/* input component for the search bar on the home page. Using inputHomePage.tsx for search components */}
+        <UserInput onResults={(data: any) => { 
+          //Use onresult to wait for a result from inputHomePage from when the user enters a search 
+          //data holds what ever the the user entered from the input of the search bar
+          //change the ticketmaster data to feed it into the map component
+          //this on result in partivular is making a call to the ticketmaster api and getting back event data
+          //I am logging the venues of the events to see if I can get the address to plot on the map
+          console.log(data._embedded.events[0]._embedded.venues); 
+          
+          //ONLY GRABBing ONE EVENT!!!!! DONT FORGET TO CHANGE THIS LATER 
+          
+
+          //once I get the data and I commpress all lists if there are multiple into one list using flatMap
+          //I set the v state to the list of venues using set state. I then hoist the data to the top 
+          //so that I can pass it to the map component as a prop to plot the venues on the map
+          //I also added a check to see if there is no data back from ticketmaster to avoid errors
+          //if there is no data back I set the state to a string that says "YOU GOT NOTHING BACK TRY AGAIN"
+
+          setData(data)
+        }} />
+        
+      {/* map component to display the venues on the map. Using MapView for display and returning what MapView is showing. */}
+        <MapView 
+        //pass the venues state to the map component as a prop
+        venues={ticketmasterData}  />
+>>>>>>> 2f45c29d20ac8ecb499ec210ebf7686ff980e8c8
       </main>
-    </div>
-  );
+    );
 }
-
-
-
-
-
-
-
-

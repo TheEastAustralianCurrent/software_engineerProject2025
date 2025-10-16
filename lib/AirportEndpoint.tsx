@@ -1,17 +1,17 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
-  const apiKey = process.env.AVIATIONSTACK_API_KEY;
-  const url = `http://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=PHL&flight_status=active`;
+export default async function airportGET() {
 
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`API request failed: ${res.status}`);
-    const data = await res.json();
-    
-    console.log(data); // thêm để debug xem API trả gì
-    return NextResponse.json(data.data || []);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+const url = 'https://api.api-ninjas.com/v1/airlines?name=AA';
+
+ try {
+    const response = await fetch(url, {
+      headers: {"X-Api-Key": "3ZIqlcCPAb1Hk5UuWFhgbw==aNQOSNofDa2l5gRX"}
+    });
+    const data = await response.json();
+    console.log(data)
+    return data;
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

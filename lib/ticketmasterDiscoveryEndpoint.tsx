@@ -15,11 +15,6 @@ export default async function ticketmaster_API() {
   console.log("second event:", events[1] ?? "none");    
 
   return (
-    /*<ul>
-        {posts.map((post: Post) => (
-            <li key={post.id}>{post.title}</li>
-        ))}
-    </ul>*/
     posts._embedded.events[2]
   )
 }
