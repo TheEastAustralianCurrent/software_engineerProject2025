@@ -118,8 +118,7 @@ export default function Home() {
             setChromaGrid(itemsForChroma);
           
         }} />
-        
-
+       
 
         <div className="block w-full h-[70vh] min-h-[420px] overflow-hidden sm:rounded-lg md:rounded-xl lg:rounded-2xl"
         >
