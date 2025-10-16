@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-
-import Nav from "@/components\\ui/Nav";
+import Nav from "@/components/ui/Nav";
+import PrismClient from "@/components/PrismClient";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,8 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* client-only Prism background (renders fixed canvas behind content) */}
+        <PrismClient />
+
         <div className="main fixed inset-0 -z-10 pointer-events-none max-w-6xl mx-auto px-4">
-          <div className="gradient"/>
+          <div className="gradient" />
         </div>
         <main className="app">
             {/* Nav bar component imported from components/ui/Nav.tsx */}

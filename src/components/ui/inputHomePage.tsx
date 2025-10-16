@@ -19,6 +19,7 @@ type PersistedInputProps = {
 
 export function PersistedInput({ onResults }: PersistedInputProps) {
   const [q, setQ] = useState("");
+  const [userInput , setUserInput] = useState("");
 
   //This will be for storing that values of ticketmaster when the user searches by keyword
   const [loading, setLoading] = useState(false); //at first not loading
@@ -39,10 +40,16 @@ export function PersistedInput({ onResults }: PersistedInputProps) {
     } catch {}
   }, [q]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem("tm-search-keyword", userInput);
+    } catch {}
+  }, [userInput]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); // prevent page reload
     setErr(null);
-
+    
     const keyword = q.trim();
     if (!keyword) return; // no empty searches
     
@@ -56,7 +63,6 @@ export function PersistedInput({ onResults }: PersistedInputProps) {
       // make the call to ticketmaster
       GET_keyword(keyword).then((data: any) => {
         //when we get a result from onresult if we get a response it will be data. else it will be null
-        console.log("data from ticketmasterClient:", data);
         onResults?.(data);});
     } catch (err: unknown) {
       let msg = "Search failed";
@@ -80,12 +86,27 @@ export function PersistedInput({ onResults }: PersistedInputProps) {
           this will be the search bar on the home page and calling this component on the page.tsx
       */}
       <Input
+        className="relative w-full max-w-2xl mx-auto rounded-2xl bg-white shadow-xl ring-1 ring-black/5 p-2"
+
+
         type="search"
         placeholder="Search events…"
         value={q}
         onChange={(e) => setQ(e.target.value)}
         aria-label="Search events"
       />
+
+      <Input 
+        className="relative w-full max-w-2xl mx-auto rounded-2xl bg-white shadow-xl ring-1 ring-black/5 p-2"
+
+
+        type="search"
+        placeholder="Search by attraction, event, or venue"
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
+        aria-label="Search by keyword"
+      />
+      
       <Button type="submit" disabled={loading}>
         {loading ? "Searching…" : "Search"}
       </Button>
