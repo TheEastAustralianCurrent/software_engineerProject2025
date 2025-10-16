@@ -114,12 +114,21 @@ const [loadingFlights, setLoadingFlights] = useState(true);
   ) : (
     <ul className="list-disc list-inside space-y-2 max-h-96 overflow-y-auto">
       {flights.map((f: any, i: number) => (
-        <li key={i}>
-         ✈️ <strong>{f.airline?.name || "Unknown Airline"}</strong> —{" "}
-      Flight {f.flight?.number || "N/A"} ({f.flight?.iata || "?"}) →{" "}
-      {f.arrival?.iata || "?"} ({f.arrival?.airport || "Unknown"})
-         <br />
-          🕒 Depart: {f.departure?.scheduled || "N/A"} | Arrive: {f.arrival?.scheduled || "N/A"}
+        <li key={i} className="leading-relaxed">
+          ✈️ <strong>{f.airline?.name || "Unknown Airline"}</strong> —{" "}
+          Flight {f.flight?.number || "N/A"} ({f.flight?.iata || "?"}) →{" "}
+          {f.arrival?.iata || "?"} ({f.arrival?.airport || "Unknown"})
+          <br />
+          🕒 <strong>Depart:</strong> {f.departure?.scheduled || "N/A"} |{" "}
+          <strong>Arrive:</strong> {f.arrival?.scheduled || "N/A"}
+          <br />
+          🏢 <strong>Departure Terminal:</strong>{" "}
+          {f.departure?.terminal || "N/A"} | <strong>Gate:</strong>{" "}
+          {f.departure?.gate || "N/A"}
+          <br />
+          🛬 <strong>Arrival Terminal:</strong>{" "}
+          {f.arrival?.terminal || "N/A"} | <strong>Gate:</strong>{" "}
+          {f.arrival?.gate || "N/A"}
         </li>
       ))}
     </ul>
