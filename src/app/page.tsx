@@ -42,7 +42,6 @@ export default function Home() {
           
         </section>
 
-
       {/* input component for the search bar on the home page. Using inputHomePage.tsx for search components */}
         <UserInput onResults={(data: any) => { 
           //Use onresult to wait for a result from inputHomePage from when the user enters a search 
@@ -118,7 +117,6 @@ export default function Home() {
             setChromaGrid(itemsForChroma);
           
         }} />
-        
 
 
         <div className="block w-full h-[70vh] min-h-[420px] overflow-hidden sm:rounded-lg md:rounded-xl lg:rounded-2xl"
@@ -139,6 +137,10 @@ export default function Home() {
             ease="power3.out"
           />
         </section>
+      {/* map component to display the venues on the map. Using MapView for display and returning what MapView is showing. */}
+        <MapView 
+        //pass the venues state to the map component as a prop
+        venues={ticketmasterData}  />
       </main>
     );
 }
