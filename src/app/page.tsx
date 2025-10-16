@@ -137,10 +137,6 @@ export default function Home() {
             ease="power3.out"
           />
         </section>
-      {/* map component to display the venues on the map. Using MapView for display and returning what MapView is showing. */}
-        <MapView 
-        //pass the venues state to the map component as a prop
-        venues={ticketmasterData}  />
       </main>
     );
 }

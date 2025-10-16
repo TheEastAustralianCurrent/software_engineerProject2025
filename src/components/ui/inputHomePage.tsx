@@ -86,7 +86,8 @@ export function PersistedInput({ onResults }: PersistedInputProps) {
           this will be the search bar on the home page and calling this component on the page.tsx
       */}
       <Input
-        className="relative w-full max-w-2xl mx-auto rounded-2xl bg-white shadow-xl ring-1 ring-black/5 p-2"
+        className="relative w-full max-w-2xl mx-auto rounded-2xl bg-white text-black placeholder:text-neutral-500 caret-black shadow-xl ring-1 ring-black/5 p-2"
+
 
 
         type="search"
@@ -97,7 +98,7 @@ export function PersistedInput({ onResults }: PersistedInputProps) {
       />
 
       <Input 
-        className="relative w-full max-w-2xl mx-auto rounded-2xl bg-white shadow-xl ring-1 ring-black/5 p-2"
+        className="relative w-full max-w-2xl mx-auto rounded-2xl bg-white text-black placeholder:text-neutral-500 caret-black shadow-xl ring-1 ring-black/5 p-2"
 
 
         type="search"

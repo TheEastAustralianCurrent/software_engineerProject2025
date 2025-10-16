@@ -9,16 +9,27 @@ export default function PrismClient() {
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: -9999, pointerEvents: "none" }}>
     <Prism 
-      hoverStrength={2}
-      inertia={.5}
-      colorFrequency={3}
-      bloom={4}
-      height={5}
-      baseWidth={Math.random() * 0.5 + 0.75}
-      animationType="hover"
+    
+      //hoverStrength={2}
+      //inertia={.5}
+      //colorFrequency={3}
+      //bloom={4}
+      //height={5}
+      //baseWidth={Math.random() * 0.5 + 0.75}
+      //animationType="hover"
+      //glow={1}
+      //scale={5}
+      //hueShift={Math.random() * 0.5 + 0.75}
+      
+      animationType="rotate"
+      timeScale={0.5}
+      height={3.5}
+      baseWidth={5.5}
+      scale={3.6}
+      hueShift={0}
+      colorFrequency={1}
+      noise={0.5}
       glow={1}
-      scale={5}
-      hueShift={Math.random() * 0.5 + 0.75}
 
     suspendWhenOffscreen={true} transparent={true} />
 </div>

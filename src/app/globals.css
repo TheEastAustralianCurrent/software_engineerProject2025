@@ -61,3 +61,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+
+
+
+
+.tm-popup .maplibregl-popup-content {
+  background: #FEF3C7;   /* amber-100 */
+  color: #111827;        /* neutral-900 */
+  padding: 0.5rem;       /* p-2 */
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);
+}
+.tm-popup .maplibregl-popup-tip { border-top-color: #FEF3C7 !important; }

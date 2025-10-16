@@ -17,7 +17,7 @@ function formatEventList(events: any[]) {
     const when = [date, time].filter(Boolean).join(" ");
     const linkOpen = e?.url ? `<a href="${e.url}" target="_blank" rel="noreferrer">` : "";
     const linkClose = e?.url ? `</a>` : "";
-    return `<li>${linkOpen}${name}${linkClose}${when ? ` — <span>${when}</span>` : ""}</li>`;
+    return `<li >${linkOpen}${name}${linkClose}${when ? ` — <span>${when}</span>` : ""}</li>`;
   });
 
   const more = events.length > shown.length ? `<li>+${events.length - shown.length} more…</li>` : "";
@@ -57,7 +57,7 @@ export default function MapView({ ticketmasterData }: any) {
                 `<strong>${venue.name ?? "Venue"}</strong>
                 <p>${events.length} event(s) here</p>
                 ${formatEventList(events)}`,      
-      },
+              },
       geometry: {
         type: "Point" as const,
         coordinates: [Number(venue.location?.longitude), Number(venue.location?.latitude)],
@@ -93,6 +93,7 @@ export default function MapView({ ticketmasterData }: any) {
         paint: {
           "circle-radius": 6,
           "circle-color": "#3b82f6",
+          
         },
       });
 
@@ -104,10 +105,14 @@ export default function MapView({ ticketmasterData }: any) {
         const coords = (f.geometry as Point).coordinates.slice() as [number, number];
         const props = f.properties as { description?: string; title?: string; url?: string };
 
-        new maplibregl.Popup()
+        const mapLibre = new maplibregl.Popup({ className: 'tm-popup' })
           .setLngLat(coords)
           .setHTML(props.description ?? props.title ?? "")
           .addTo(map);
+
+        mapLibre.addClassName("bg-amber-50 p-2 rounded-lg shadow-lg");
+        
+          
       });
 
       map.on("mouseenter", "places", () => {
